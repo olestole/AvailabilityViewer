@@ -1,45 +1,43 @@
+import { format } from "date-fns";
 import React from "react";
 import useQuery from "../hooks/useQuery";
-import { RootObject } from "../types/AvailabilityRootObject";
+import filterDates from "../utils/filterDates";
 import TimeslotGroup from "./TimeslotGroup";
+import { nb } from "date-fns/esm/locale";
+import { motion } from "framer-motion";
+import SelectedTimeslot from "./SelectedTimeslot";
+import LoadingIndicator from "./LoadingIndicator";
 
-const filterDates = (dates: RootObject[]) => {
-  let morning = [];
-  let afternoon = [];
-  let evening = [];
-
-  for (const date of dates) {
-    const formattedDate = new Date(date.time);
-    if (formattedDate.getHours() < 12) {
-      morning.push(formattedDate);
-      continue;
-    } else if (formattedDate.getHours() < 18) {
-      afternoon.push(formattedDate);
-      continue;
-    }
-    evening.push(formattedDate);
-  }
-
-  return { morning, afternoon, evening };
-};
+const APIUrl =
+  "https://aqb93cd3y2.execute-api.eu-north-1.amazonaws.com/dev/api/v1/availability/groupavailabilityforday?shopId=114&day=20211122&product=SYN";
 
 const TimeSlots: React.FC = () => {
-  const { data, loading } = useQuery(
-    "https://aqb93cd3y2.execute-api.eu-north-1.amazonaws.com/dev/api/v1/availability/groupavailabilityforday?shopId=114&day=20211122&product=SYN"
-  );
+  const { data, loading } = useQuery(APIUrl);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingIndicator />;
   }
 
   const { morning, afternoon, evening } = filterDates(data);
 
   return (
-    <div className="bg-blue-300 px-6 py-12 space-y-4 rounded-md">
-      <TimeslotGroup dates={morning} timeOfDay="Morning" />
-      <TimeslotGroup dates={afternoon} timeOfDay="Afternoon" />
-      <TimeslotGroup dates={evening} timeOfDay="Evening" />
-    </div>
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-primary px-6 py-12 space-y-4 rounded-md shadow-stripe"
+    >
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Dagens timer</h1>
+        <p className="font-light capitalize">
+          {format(new Date(), "eeee, d. MMMM", { locale: nb })}
+        </p>
+      </div>
+      <TimeslotGroup dates={morning} timeOfDay="Morgen" />
+      <TimeslotGroup dates={afternoon} timeOfDay="Ettermiddag" />
+      <TimeslotGroup dates={evening} timeOfDay="Kveld" />
+      <SelectedTimeslot />
+    </motion.div>
   );
 };
 

@@ -1,11 +1,14 @@
 import React from "react";
-import TimeSlots from "./components/AvailabilityTable";
-import Layout from "./Layout";
+import AvailabilityTable from "./components/AvailabilityTable";
+import Layout from "./components/Layout";
+import TimeslotContextProvider from "./components/TimeslotContext";
 
 const App: React.FC = () => {
   return (
     <Layout>
-      <TimeSlots />
+      <TimeslotContextProvider>
+        <AvailabilityTable />
+      </TimeslotContextProvider>
     </Layout>
   );
 };
