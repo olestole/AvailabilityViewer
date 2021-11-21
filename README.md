@@ -1,3 +1,31 @@
+# AvailabilityViewer
+
+## NB: Do this before running the code - known issue:
+
+There is an issue using Framer motion version 5.x with create-react-app. You will most likely be met by the following error:
+
+`node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs Can't import the named export 'Children' from non EcmaScript module (only default export is available)`
+
+To remedy this you have to add a new rule the the webpack-config. In order to not eject all config-files, I decided to edit the packaged webpack.config-file directly in `node_modules/react-scripts/config/webpack.config.js` with the following:
+
+```js
+// Add this to rules on line 372
+
+{
+  type: 'javascript/auto',
+  test: /\.mjs$/,
+  use: []
+},
+```
+
+**Add this rule yourself before running the code**
+
+*Related issues on GitHub:*
+- https://github.com/treshugart/react-shade/issues/8
+- https://github.com/formatjs/formatjs/issues/1395
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
